@@ -157,6 +157,9 @@ void list_sort_ascending (list_t **head)
      */
 }
 
+/*
+ * Search for the element containing 'data'
+ */
 list_t* list_find (list_t *head, unsigned int data)
 {
     list_t *elem;
@@ -172,6 +175,50 @@ list_t* list_find (list_t *head, unsigned int data)
     return (NULL);
 }
 
+/*
+ * Insert an element - pointed to by 'to_be_inserted' -
+ * in the list, following the element 'preceding_elem'
+ */
+bool list_insert_element (list_t **head,
+                          list_t *preceding_elem,
+                          list_t *to_be_inserted)
+{
+    list_t *elem;
+
+    /*
+     * 'preceding_elem' can be NULL which means that
+     * we want to insert the elemenet at the head of
+     * the list. Hence why a NULL check is not required
+     */
+    if (!head || !*head || !to_be_inserted) {
+        list_info("\nInvalid head or data pointer\n");
+        return (FALSE);
+    }
+
+    elem = *head;
+    if (!preceding_elem) {
+        /* We want to make this new element the new head */
+        to_be_inserted->next = *head;
+        *head = to_be_inserted;
+        return (TRUE);
+    }
+
+    while (elem) {
+        if (elem == preceding_elem) {
+            to_be_inserted->next = elem->next;
+            elem->next = to_be_inserted;
+            return (TRUE);
+        }
+        elem = elem->next;
+    }
+
+    return (FALSE);
+}
+
+/*
+ * Remove an element - pointed to by 'to_be_removed' -
+ * from the list
+ */
 bool list_remove_element (list_t **head, list_t *to_be_removed)
 {
     list_t *elem;
@@ -206,6 +253,7 @@ int main (void)
     #define NUM_OF_ELEMENTS 8
     list_t *list_head = NULL;
     list_t *temp = NULL;
+    list_t *element = NULL;
     unsigned int numbers[] = { 3, 17, 22, 38, 45, 54, 61, 79 };
     unsigned int lookup;
 
@@ -250,6 +298,52 @@ int main (void)
         list_info("Failed to remove '%d' from the list\n", lookup);
     }
     temp = NULL;
+
+    list_info("\nUpdated List:");
+    list_print(list_head);
+
+    /* Lets insert a new element in the middle of the list */
+    lookup = 22;
+    list_info("\nLets add a new element after '%d'\n", lookup);
+
+    temp = list_find(list_head, lookup);
+    if (temp) {
+        list_info("\nElement '%d' found at %x\n", temp->data, temp);
+    } else {
+        list_info("\nElement '%d' NOT found\n", lookup);
+    }
+
+    /* Create a new element */
+    element = (list_t*) malloc(sizeof(list_t));
+    if (!element) {
+        list_info("Error in creating element to be inserted\n");
+        return (FALSE);
+    }
+    element->data = 29;
+    element->next = NULL;
+
+    if (!list_insert_element(&list_head, temp, element)) {
+        list_info("Failed to insert element into the list\n");
+    }
+
+    list_info("\nUpdated List:");
+    list_print(list_head);
+
+    /* Lets insert a new element in the head of the list */
+    list_info("\nLets add a new element in the beginning of the list\n");
+
+    /* Create a new element */
+    element = (list_t*) malloc(sizeof(list_t));
+    if (!element) {
+        list_info("Error in creating element to be inserted\n");
+        return (FALSE);
+    }
+    element->data = 1;
+    element->next = NULL;
+
+    if (!list_insert_element(&list_head, NULL, element)) {
+        list_info("Failed to insert element into the list\n");
+    }
 
     list_info("\nUpdated List:");
     list_print(list_head);
