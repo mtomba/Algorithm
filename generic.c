@@ -99,35 +99,9 @@ void list_print (list_t *head)
  */
 void list_sort_ascending (list_t **head)
 {
-    list_t *elem;
-    list_t *temp;
-    list_t *prev = NULL;
-
-    if (!head) {
-        list_info("The list is empty\n");
-        return;
-    }
-
-    elem = *head;
-
-    while (elem) {
-        if (!prev) {
-            prev = elem;
-            elem = elem->next;
-            continue;
-        }
-
-        if (prev->data > elem->data) {
-            temp = elem;
-            prev->next = elem->next; 
-            temp->next = prev;
-            elem = prev;
-            if (prev == *head) {
-                *head = elem;
-            }
-        }
-        elem = elem->next;
-    }
+    /*
+     * To be added later
+     */
 }
 
 int main (void)
@@ -144,8 +118,6 @@ int main (void)
     list_info("Original List:");
     list_print(list_head);
 
-    /* Lets sort our list here */
-    list_sort_ascending(&list_head);
 
     list_info("Sorted List:");
     list_print(list_head);
