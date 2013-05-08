@@ -248,6 +248,24 @@ bool list_remove_element (list_t **head, list_t *to_be_removed)
     return (FALSE);
 }
 
+/*
+ * Destroy the entire list
+ */
+void list_destroy (list_t **head)
+{
+    list_t *elem;
+    list_t *temp;
+
+    elem = *head;
+    while (elem) {
+        temp = elem;
+        elem = elem->next;
+        free(temp);
+    }
+
+    *head = NULL;
+}
+
 int main (void)
 {
     #define NUM_OF_ELEMENTS 8
@@ -346,6 +364,10 @@ int main (void)
     }
 
     list_info("\nUpdated List:");
+    list_print(list_head);
+
+    list_info("Deleting all elements in the list\n");
+    list_destroy(&list_head);
     list_print(list_head);
 
     return (0);
